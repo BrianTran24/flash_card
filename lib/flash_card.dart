@@ -6,6 +6,9 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 class FlashCardController {
+  /// Allow control flip card
+  /// if return true, card is front
+  /// else card is back
   late Future<bool> Function() toggleSide;
 }
 
