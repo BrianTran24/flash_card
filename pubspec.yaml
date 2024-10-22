@@ -1,11 +1,11 @@
 name: flash_card
 description: Support for creating Flash Cards - a learning method that makes it easier for users to remember information.
-version: 0.0.4
+version: 0.0.5
 author: tranhieu
 homepage: https://github.com/GaNuiGLPK/flash_card
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=3.0.0 <4.0.0"
   flutter: ">=1.17.0"
 
 dependencies:

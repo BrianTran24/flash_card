@@ -29,21 +29,23 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatelessWidget {
-  MyHomePage({this.title});
+  MyHomePage({required this.title});
 
   final String title;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(title),
-        ),
-        body: ListView.builder(
-            itemCount: flashCard.length,
-            itemBuilder: (context, index) {
-              return flashCard[index];
-            }));
+      appBar: AppBar(
+        title: Text(title),
+      ),
+      body: ListView.builder(
+        itemCount: flashCard.length,
+        itemBuilder: (context, index) {
+          return flashCard[index];
+        },
+      ),
+    );
   }
 
   final List<FlashCard> flashCard = List.generate(
@@ -63,32 +65,20 @@ class MyHomePage extends StatelessWidget {
                     ),
                     Text.rich(TextSpan(
                         text: 'Nghĩa:',
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20),
+                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 20),
                         children: [
                           TextSpan(
                             text: 'Ngôi nhà',
-                            style: TextStyle(
-                                color: Colors.red,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20),
+                            style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold, fontSize: 20),
                           )
                         ])),
                     Text.rich(TextSpan(
                         text: 'Phiên âm:',
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20),
+                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 20),
                         children: [
                           TextSpan(
                             text: '/həʊm/',
-                            style: TextStyle(
-                                color: Colors.red,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20),
+                            style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold, fontSize: 20),
                           )
                         ])),
                     Container(
@@ -100,15 +90,9 @@ class MyHomePage extends StatelessWidget {
                           color: Colors.white,
                           border: Border.all(color: Colors.blue, width: 2),
                           boxShadow: [
-                            BoxShadow(
-                                color: Colors.grey,
-                                offset: Offset(2, 2),
-                                spreadRadius: 1,
-                                blurRadius: 15)
+                            BoxShadow(color: Colors.grey, offset: Offset(2, 2), spreadRadius: 1, blurRadius: 15)
                           ]),
-                      child: Center(
-                          child: Icon(Icons.volume_down_sharp,
-                              color: Colors.blue)),
+                      child: Center(child: Icon(Icons.volume_down_sharp, color: Colors.blue)),
                     ),
                   ],
                 )),
@@ -118,10 +102,7 @@ class MyHomePage extends StatelessWidget {
               child: Center(
                 child: Text(
                   'Home $index',
-                  style: TextStyle(
-                      color: Colors.deepPurple,
-                      fontSize: 30,
-                      fontWeight: FontWeight.w900),
+                  style: TextStyle(color: Colors.deepPurple, fontSize: 30, fontWeight: FontWeight.w900),
                 ),
               ),
             ),

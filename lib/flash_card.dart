@@ -1,20 +1,26 @@
 library flash_card;
 
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+class FlashCardController {
+  late Future<bool> Function() toggleSide;
+}
+
 /// UI flash card, commonly found in language teaching to children
 class FlashCard extends StatefulWidget {
   /// constructor: Default height 200dp, width 200dp, duration  500 milliseconds
-  const FlashCard(
-      {required this.frontWidget,
-      required this.backWidget,
-      Key? key,
-      this.duration = const Duration(milliseconds: 500),
-      this.height = 200,
-      this.width = 200})
-      : super(key: key);
+  const FlashCard({
+    required this.frontWidget,
+    required this.backWidget,
+    Key? key,
+    this.duration = const Duration(milliseconds: 500),
+    this.height = 200,
+    this.width = 200,
+    this.controller,
+  }) : super(key: key);
 
   /// this is the front of the card
   final Widget frontWidget;
@@ -31,12 +37,13 @@ class FlashCard extends StatefulWidget {
   /// width of card
   final double width;
 
+  final FlashCardController? controller;
+
   @override
   _FlashCardState createState() => _FlashCardState();
 }
 
-class _FlashCardState extends State<FlashCard>
-    with SingleTickerProviderStateMixin {
+class _FlashCardState extends State<FlashCard> with SingleTickerProviderStateMixin {
   /// controller flip animation
   late AnimationController _controller;
 
@@ -49,15 +56,19 @@ class _FlashCardState extends State<FlashCard>
   /// state of card is front or back
   bool isFrontVisible = true;
 
+  Completer<bool>? _completer;
+
   @override
   void initState() {
     super.initState();
+    if (widget.controller != null) {
+      widget.controller!.toggleSide = _toggleSide;
+    }
     _controller = AnimationController(vsync: this, duration: widget.duration);
     _frontAnimation = TweenSequence(
       <TweenSequenceItem<double>>[
         TweenSequenceItem<double>(
-          tween: Tween(begin: 0.0, end: math.pi / 2)
-              .chain(CurveTween(curve: Curves.linear)),
+          tween: Tween(begin: 0.0, end: math.pi / 2).chain(CurveTween(curve: Curves.linear)),
           weight: 50.0,
         ),
         TweenSequenceItem<double>(
@@ -74,8 +85,7 @@ class _FlashCardState extends State<FlashCard>
           weight: 50.0,
         ),
         TweenSequenceItem<double>(
-          tween: Tween(begin: -math.pi / 2, end: 0.0)
-              .chain(CurveTween(curve: Curves.linear)),
+          tween: Tween(begin: -math.pi / 2, end: 0.0).chain(CurveTween(curve: Curves.linear)),
           weight: 50.0,
         ),
       ],
@@ -115,24 +125,26 @@ class _FlashCardState extends State<FlashCard>
   }
 
   /// when user onTap, It will run function
-  void _toggleSide() {
+  Future<bool> _toggleSide() {
+    _completer = Completer<bool>();
     if (isFrontVisible) {
-      _controller.forward();
       isFrontVisible = false;
+      _controller.forward().then((_) {
+        _completer?.complete(true);
+      });
     } else {
-      _controller.reverse();
       isFrontVisible = true;
+      _controller.reverse().then((_) {
+        _completer?.complete(false);
+      });
     }
+    setState(() {});
+    return _completer!.future;
   }
 }
 
 class AnimatedCard extends StatelessWidget {
-  AnimatedCard(
-      {required this.child,
-      required this.animation,
-      required this.height,
-      required this.width,
-      Key? key})
+  AnimatedCard({required this.child, required this.animation, required this.height, required this.width, Key? key})
       : super(key: key);
 
   final Widget child;
@@ -149,14 +161,15 @@ class AnimatedCard extends StatelessWidget {
         height: height,
         width: width,
         child: Card(
-            elevation: 4,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-            borderOnForeground: false,
-            child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: child,
-            )),
+          elevation: 0,
+          color: Colors.transparent,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          borderOnForeground: false,
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: child,
+          ),
+        ),
       ),
     );
   }
@@ -168,6 +181,7 @@ class AnimatedCard extends StatelessWidget {
     return Transform(
       transform: transform,
       alignment: Alignment.center,
+      key: UniqueKey(),
       child: child,
     );
   }
