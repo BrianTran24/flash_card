@@ -16,6 +16,10 @@
 ## [0.0.5]
 * update documment
 
+## [0.0.6]
+* update dart version 
+* add flashcard controller 
+* fix bug lazy render
 
 
 

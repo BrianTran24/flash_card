@@ -23,10 +23,10 @@ class FlashCard extends StatefulWidget {
   }) : super(key: key);
 
   /// this is the front of the card
-  final Widget frontWidget;
+  final Widget Function() frontWidget;
 
   /// this is the back of the card
-  final Widget backWidget;
+  final Widget Function() backWidget;
 
   /// flip time
   final Duration duration;
@@ -57,10 +57,14 @@ class _FlashCardState extends State<FlashCard> with SingleTickerProviderStateMix
   bool isFrontVisible = true;
 
   Completer<bool>? _completer;
+  late Widget backWidget;
+  late Widget frontWidget;
 
   @override
   void initState() {
     super.initState();
+    backWidget = widget.backWidget.call();
+    frontWidget = widget.frontWidget.call();
     if (widget.controller != null) {
       widget.controller!.toggleSide = _toggleSide;
     }
@@ -99,6 +103,14 @@ class _FlashCardState extends State<FlashCard> with SingleTickerProviderStateMix
   }
 
   @override
+  void didUpdateWidget(FlashCard oldWidget) {
+    if (oldWidget.controller != widget.controller) {
+      widget.controller!.toggleSide = _toggleSide;
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
@@ -106,7 +118,7 @@ class _FlashCardState extends State<FlashCard> with SingleTickerProviderStateMix
           onTap: _toggleSide,
           child: AnimatedCard(
             animation: _frontAnimation,
-            child: widget.backWidget,
+            child: backWidget,
             height: widget.height,
             width: widget.width,
           ),
@@ -115,7 +127,7 @@ class _FlashCardState extends State<FlashCard> with SingleTickerProviderStateMix
           onTap: _toggleSide,
           child: AnimatedCard(
             animation: _backAnimation,
-            child: widget.frontWidget,
+            child: frontWidget,
             height: widget.height,
             width: widget.width,
           ),
@@ -125,20 +137,23 @@ class _FlashCardState extends State<FlashCard> with SingleTickerProviderStateMix
   }
 
   /// when user onTap, It will run function
-  Future<bool> _toggleSide() {
+  Future<bool> _toggleSide() async{
+    backWidget = widget.backWidget.call();
+    frontWidget = widget.frontWidget.call();
+    setState(() {});
     _completer = Completer<bool>();
     if (isFrontVisible) {
       isFrontVisible = false;
-      _controller.forward().then((_) {
+      await _controller.forward().then((_) {
         _completer?.complete(true);
       });
     } else {
       isFrontVisible = true;
-      _controller.reverse().then((_) {
+     await _controller.reverse().then((_) {
         _completer?.complete(false);
       });
     }
-    setState(() {});
+
     return _completer!.future;
   }
 }
@@ -181,7 +196,6 @@ class AnimatedCard extends StatelessWidget {
     return Transform(
       transform: transform,
       alignment: Alignment.center,
-      key: UniqueKey(),
       child: child,
     );
   }
