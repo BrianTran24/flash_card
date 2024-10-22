@@ -43,7 +43,8 @@ class FlashCard extends StatefulWidget {
   _FlashCardState createState() => _FlashCardState();
 }
 
-class _FlashCardState extends State<FlashCard> with SingleTickerProviderStateMixin {
+class _FlashCardState extends State<FlashCard>
+    with SingleTickerProviderStateMixin {
   /// controller flip animation
   late AnimationController _controller;
 
@@ -72,7 +73,8 @@ class _FlashCardState extends State<FlashCard> with SingleTickerProviderStateMix
     _frontAnimation = TweenSequence(
       <TweenSequenceItem<double>>[
         TweenSequenceItem<double>(
-          tween: Tween(begin: 0.0, end: math.pi / 2).chain(CurveTween(curve: Curves.linear)),
+          tween: Tween(begin: 0.0, end: math.pi / 2)
+              .chain(CurveTween(curve: Curves.linear)),
           weight: 50.0,
         ),
         TweenSequenceItem<double>(
@@ -89,7 +91,8 @@ class _FlashCardState extends State<FlashCard> with SingleTickerProviderStateMix
           weight: 50.0,
         ),
         TweenSequenceItem<double>(
-          tween: Tween(begin: -math.pi / 2, end: 0.0).chain(CurveTween(curve: Curves.linear)),
+          tween: Tween(begin: -math.pi / 2, end: 0.0)
+              .chain(CurveTween(curve: Curves.linear)),
           weight: 50.0,
         ),
       ],
@@ -137,7 +140,7 @@ class _FlashCardState extends State<FlashCard> with SingleTickerProviderStateMix
   }
 
   /// when user onTap, It will run function
-  Future<bool> _toggleSide() async{
+  Future<bool> _toggleSide() async {
     backWidget = widget.backWidget.call();
     frontWidget = widget.frontWidget.call();
     setState(() {});
@@ -149,7 +152,7 @@ class _FlashCardState extends State<FlashCard> with SingleTickerProviderStateMix
       });
     } else {
       isFrontVisible = true;
-     await _controller.reverse().then((_) {
+      await _controller.reverse().then((_) {
         _completer?.complete(false);
       });
     }
@@ -159,7 +162,12 @@ class _FlashCardState extends State<FlashCard> with SingleTickerProviderStateMix
 }
 
 class AnimatedCard extends StatelessWidget {
-  AnimatedCard({required this.child, required this.animation, required this.height, required this.width, Key? key})
+  AnimatedCard(
+      {required this.child,
+      required this.animation,
+      required this.height,
+      required this.width,
+      Key? key})
       : super(key: key);
 
   final Widget child;
@@ -178,7 +186,8 @@ class AnimatedCard extends StatelessWidget {
         child: Card(
           elevation: 0,
           color: Colors.transparent,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           borderOnForeground: false,
           child: Padding(
             padding: const EdgeInsets.all(10),
